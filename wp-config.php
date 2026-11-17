@@ -19,8 +19,13 @@ define('DB_CHARSET', 'utf8mb4');
 define('DB_COLLATE', '');
 
 // Aiven 等远程 MySQL 强制 SSL 时启用（环境变量 DB_SSL=1）
+// CA 证书默认用仓库根目录的 aiven-ca.pem，可用环境变量 DB_SSL_CA 覆盖路径
 if (getenv('DB_SSL')) {
     define('MYSQL_CLIENT_FLAGS', MYSQLI_CLIENT_SSL);
+    $_ssl_ca = getenv('DB_SSL_CA') ?: (__DIR__ . '/aiven-ca.pem');
+    if (file_exists($_ssl_ca)) {
+        define('MYSQL_SSL_CA', $_ssl_ca);
+    }
 }
 
 /**#@+
